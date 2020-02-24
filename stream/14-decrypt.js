@@ -1,8 +1,6 @@
 /*
-The applications of combining streams are endless. For example, if we need to 
-encrypt the file before or after we gzip it, all we need to do is pipe another 
-transform stream in that exact order that we needed. We can use Node’s crypto 
-module for that:
+To actually be able to unzip anything zipped with the script above, we 
+need to use the opposite streams for crypto and zlib in a reverse order, which is simple:
 */
 
 
@@ -31,9 +29,9 @@ const reportProgress = new Transform({
 key = Buffer.concat([Buffer.from("abcdefg")], key.length);
 
 fs.createReadStream(file)
-  .pipe(zlib.createGzip())
-  .pipe(crypto.createCipheriv('aes-256-cbc', key, iv))
+  .pipe(crypto.createDecipheriv('aes-256-cbc', key, iv))
+  .pipe(zlib.createGunzip())
   .pipe(reportProgress)
-  .pipe(fs.createWriteStream(file + '.zz'))
+  .pipe(fs.createWriteStream(file + '.decoded'))
   .on('finish', () => console.log('Done'));
 
