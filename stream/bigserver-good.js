@@ -36,6 +36,8 @@ const fs = require('fs');
 const server = require('http').createServer();
 
 server.on('request', (req, res) => {
+  // The default buffer size is 64 KiloBytes 
+  // var fStream = fs.createReadStream('/foo/bar', { highWaterMark: 128 * 1024 });
   const src = fs.createReadStream('./temp/big.file');
   src.pipe(res);
 });
